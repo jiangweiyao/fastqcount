@@ -1,0 +1,9 @@
+[package]
+name = "fastqcount"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+bio = "1"
+flate2 = "1.0"
+kseq = "0.5.3"

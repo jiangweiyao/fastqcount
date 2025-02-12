@@ -1,0 +1,21 @@
+use bio::io::fastq;
+use std::io;
+use flate2::read::GzDecoder;
+
+
+fn main(){
+    let reader = fastq::Reader::from_file("/home/jyao/rust_proj/HI.4019.002.index_7.ANN0831_R1.fastq.gz").unwrap();;
+
+    let mut nb_reads = 0;
+    let mut nb_bases = 0;
+
+    for result in reader.records() {
+        let record = result.expect("Error during fastq record parsing");
+
+        nb_reads += 1;
+        nb_bases += record.seq().len();
+    }
+
+    println!("Number of reads: {}", nb_reads);
+    println!("Number of bases: {}", nb_bases);
+}
