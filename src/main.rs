@@ -2,11 +2,14 @@ use std::env::args;
 use std::fs::File;
 use kseq::parse_path;
 use std::collections::HashMap;
+use std::fs;
+use std::io::{BufWriter, Write};
 
 
 fn main(){
-	let path: String = args().nth(1).unwrap();
-	let mut records = parse_path(path).unwrap();
+	let inpath: String = args().nth(1).unwrap();
+        let outpath: String = args().nth(2).unwrap();
+	let mut records = parse_path(inpath).unwrap();
         let mut unique_hashmap = HashMap::new();
 
         let mut nb_reads = 0;
@@ -40,4 +43,17 @@ fn main(){
         println!("Number of reads containing N: {}", nb_nrecord);
         let size = unique_hashmap.keys().len();
         println!("Number of unique reads not containing N: {}", size);
+        let countoutput = outpath.clone() + "count.txt";
+
+        let f = File::create(countoutput).expect("unable to create file");
+        let mut f = BufWriter::new(f);
+    
+        for (key, value) in unique_hashmap {
+            // println!("{},{}", key, value);
+            writeln!(f, "{},{}", key,value).expect("unable to write");
+        }
+
+        let statoutput = outpath.clone() + "stat.txt";
+        let mut e = File::create(statoutput).expect("unable to create file");
+        writeln!(e, "Number of reads containing N: {}", nb_nrecord).expect("unable to write");
 }
