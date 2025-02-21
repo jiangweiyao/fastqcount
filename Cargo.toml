@@ -7,3 +7,4 @@ edition = "2021"
 bio = "1"
 flate2 = "1.0"
 kseq = "0.5.3"
+clap = { version = "4.5.29", features = ["cargo", "derive"] }

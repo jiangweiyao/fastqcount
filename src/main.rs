@@ -1,15 +1,36 @@
-use std::env::args;
 use std::fs::File;
 use kseq::parse_path;
 use std::collections::HashMap;
 use std::fs;
 use std::io::{BufWriter, Write};
+use clap::Parser;
+
+
+#[derive(Parser)]
+#[command(name = "FastqCount")]
+#[command(version = "0.1")]
+#[command(about = "Record and counts the unique sequences in a FASTQ file", long_about = None)]
+struct Cli {
+    #[arg(short, long)]
+    input: String,
+    #[arg(short, long)]
+    output: String,
+    #[arg(short, long)]
+    name: String,
+}
 
 
 fn main(){
-	let inpath: String = args().nth(1).unwrap();
-        let outpath: String = args().nth(2).unwrap();
-	let mut records = parse_path(inpath).unwrap();
+	let cli = Cli::parse();
+
+        //let inpath: String = args().nth(1).unwrap();
+        //let outpath: String = args().nth(2).unwrap();
+
+        println!("input: {:?}", cli.input);
+        println!("output: {:?}", cli.output);
+        println!("name: {:?}", cli.name);
+
+	let mut records = parse_path(cli.input).unwrap();
         let mut unique_hashmap = HashMap::new();
 
         let mut nb_reads = 0;
@@ -43,8 +64,8 @@ fn main(){
         println!("Number of reads containing N: {}", nb_nrecord);
         let size = unique_hashmap.keys().len();
         println!("Number of unique reads not containing N: {}", size);
-        let countoutput = outpath.clone() + "count.txt";
-
+        let countoutput = cli.output.clone() + &cli.name.clone() + "_count.txt";
+        fs::create_dir_all(&cli.output);
         let f = File::create(countoutput).expect("unable to create file");
         let mut f = BufWriter::new(f);
     
@@ -53,7 +74,7 @@ fn main(){
             writeln!(f, "{},{}", key,value).expect("unable to write");
         }
 
-        let statoutput = outpath.clone() + "stat.txt";
+        let statoutput = cli.output.clone() + &cli.name.clone() + "_stat.txt";
         let mut e = File::create(statoutput).expect("unable to create file");
         writeln!(e, "Number of reads containing N: {}", nb_nrecord).expect("unable to write");
 }
