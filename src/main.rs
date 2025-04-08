@@ -65,10 +65,11 @@ fn main(){
         let size = unique_hashmap.keys().len();
         println!("Number of unique reads not containing N: {}", size);
         let countoutput = cli.output.clone() + &cli.name.clone() + "_count.txt";
-        fs::create_dir_all(&cli.output);
+        let _ = fs::create_dir_all(&cli.output);
         let f = File::create(countoutput).expect("unable to create file");
         let mut f = BufWriter::new(f);
-    
+
+        writeln!(f, "NReads,{}", nb_nrecord).expect("unable to write");
         for (key, value) in unique_hashmap {
             // println!("{},{}", key, value);
             writeln!(f, "{},{}", key,value).expect("unable to write");
@@ -76,5 +77,7 @@ fn main(){
 
         let statoutput = cli.output.clone() + &cli.name.clone() + "_stat.txt";
         let mut e = File::create(statoutput).expect("unable to create file");
+        writeln!(e, "Number of reads containing N: {}", nb_nrecord).expect("unable to write");
+        writeln!(e, "Number of bases: {}", nb_bases).expect("unable to write");
         writeln!(e, "Number of reads containing N: {}", nb_nrecord).expect("unable to write");
 }
