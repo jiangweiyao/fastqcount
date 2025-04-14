@@ -46,12 +46,10 @@ fn main(){
                 let sequence = String::from(record.seq());
                 if record.seq().contains("N") {
                     nb_nrecord += 1;
-                } else {
-                    if let Some(count) = unique_hashmap.get(&sequence){
+                } else if let Some(count) = unique_hashmap.get(&sequence){
                         unique_hashmap.insert(sequence, count + 1);
-                    } else {
-                        unique_hashmap.insert(sequence, 1);
-                    };
+                } else {
+                    unique_hashmap.insert(sequence, 1);
                 };
                 nb_reads += 1;
                 nb_bases += record.seq().len();
